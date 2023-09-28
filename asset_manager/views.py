@@ -237,3 +237,8 @@ def check_in_device(request, assignment_id):
 
     return render(request, 'device_check_in_form.html', {'form': form})
 
+@login_required
+def device_assignment_list(request):
+    assignments = DeviceAssignment.objects.filter(user_profile=request.user.userprofile)
+    return render(request, 'device_assignment_list.html', {'assignments': assignments})
+

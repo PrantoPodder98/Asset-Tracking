@@ -21,5 +21,6 @@ urlpatterns = [
     path('dashboard/', views.dashboard, name='dashboard'),
     path('check-out-device/', views.check_out_device, name='check_out_device'),
     path('check-in-device/<int:assignment_id>/', views.check_in_device, name='check_in_device'),
+    path('device-assignments/', views.device_assignment_list, name='device_assignment_list'),
     # Add more URLs for asset tracking and management as needed
 ]

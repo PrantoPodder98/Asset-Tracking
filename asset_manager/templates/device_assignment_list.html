@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Device Assignment List</h2>
+  <ul>
+    {% for assignment in assignments %}
+      <li>
+        <strong>Device:</strong> {{ assignment.device }}<br>
+        <strong>Assigned To:</strong> {{ assignment.employee }}<br>
+        <strong>Assignment Period:</strong> {{ assignment.start_date }} to {{ assignment.end_date }}<br>
+        <strong>Status:</strong> {% if assignment.status == 1 %}Assigned{% else %}Available{% endif %}<br>
+        {% if assignment.status == 1 %}
+          <strong>Condition When Checked Out:</strong> {{ assignment.condition }}<br>
+          <strong>Checked Out Date:</strong> {{ assignment.device_log.checked_out_date }}<br>
+        {% else %}
+          <strong>Condition When Checked In:</strong> {{ assignment.condition }}<br>
+          <strong>Checked In Date:</strong> {{ assignment.device_log.checked_in_date }}<br>
+        {% endif %}
+        <a href="{% url 'check_in_device' assignment.id %}">Check In</a>
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'check_out_device' %}">Check Out a Device</a>
+  <a href="{% url 'device_handover_list' %}">Back to Device Handover List</a>
+{% endblock %}
