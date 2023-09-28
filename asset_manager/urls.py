@@ -12,6 +12,9 @@ urlpatterns = [
     path('employee-list/', views.employee_list, name='employee_list'),
     path('employee/add/', views.add_or_update_employee, name='add_employee'),
     path('employee/edit/<int:employee_id>/', views.add_or_update_employee, name='edit_employee'),
+    path('devices/', views.device_list, name='device_list'),
+    path('device/add/', views.add_or_update_device, name='add_device'),
+    path('device/edit/<int:device_id>/', views.add_or_update_device, name='edit_device'),
     path('dashboard/', views.dashboard, name='dashboard'),
     # Add more URLs for asset tracking and management as needed
 ]

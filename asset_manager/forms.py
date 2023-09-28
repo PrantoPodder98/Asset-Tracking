@@ -2,7 +2,7 @@
 
 from django import forms
 from django.contrib.auth.models import User
-from .models import Employee, UserProfile
+from .models import Employee, UserProfile, Device
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
@@ -18,3 +18,8 @@ class UserRegistrationForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'password']
+
+class DeviceForm(forms.ModelForm):
+    class Meta:
+        model = Device
+        fields = ['name', 'description']

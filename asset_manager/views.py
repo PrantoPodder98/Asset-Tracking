@@ -4,10 +4,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .models import UserProfile, Employee
+from .models import UserProfile, Employee, Device
 from django.http import HttpResponseBadRequest
 from django.contrib import messages
-from .forms import UserProfileForm, EmployeeRegistrationForm, UserRegistrationForm
+from .forms import UserProfileForm, EmployeeRegistrationForm, UserRegistrationForm, DeviceForm
 from django.shortcuts import get_object_or_404
 
 
@@ -109,6 +109,33 @@ def employee_list(request):
     employees = Employee.objects.filter(user_profile=request.user.userprofile)
     return render(request, 'employee_list.html', {'employees': employees})
 
+@login_required
+def add_or_update_device(request, device_id=None):
+    if device_id:
+        device = get_object_or_404(Device, id=device_id)
+    else:
+        device = None
+
+    if request.method == 'POST':
+        form = DeviceForm(request.POST, instance=device)
+        if form.is_valid():
+            device = form.save(commit=False)
+            device.user_profile = request.user.userprofile  # Set the user_profile
+            device.save()
+            messages.success(request, 'Device added/updated successfully.')
+            return redirect('device_list')
+    else:
+        form = DeviceForm(instance=device)
+
+    return render(request, 'device_form.html', {'form': form, 'device': device})
+
+
+@login_required
+def device_list(request):
+    devices = Device.objects.filter(user_profile=request.user.userprofile)
+    return render(request, 'device_list.html', {'devices': devices})
+
+    
 @login_required
 def dashboard(request):
     user = request.user
