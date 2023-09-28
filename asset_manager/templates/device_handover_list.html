@@ -8,6 +8,8 @@
         Assigned to: {{ handover.employee }}
         From: {{ handover.start_date }} to {{ handover.end_date }}
         <a href="{% url 'edit_device_handover' handover.id %}">Edit</a>
+        <a href="{% url 'check_out_device' %}">Check Out</a>
+        <a href="{% url 'check_in_device' assignment.id %}">Check In</a> 
       </li>
     {% endfor %}
   </ul>

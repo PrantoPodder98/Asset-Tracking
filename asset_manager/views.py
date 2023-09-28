@@ -209,7 +209,7 @@ def check_out_device(request):
     else:
         form = DeviceHandoverForm(initial={'user_profile': request.user.userprofile})
 
-    return render(request, 'device_handover_form.html', {'form': form})
+    return render(request, 'device_check_out_form.html', {'form': form})
 
 # Function to update an existing device assignment along with log entry for checking in
 def check_in_device(request, assignment_id):
@@ -235,5 +235,5 @@ def check_in_device(request, assignment_id):
     else:
         form = DeviceHandoverForm(instance=device_assignment)
 
-    return render(request, 'device_handover_form.html', {'form': form})
+    return render(request, 'device_check_in_form.html', {'form': form})
 

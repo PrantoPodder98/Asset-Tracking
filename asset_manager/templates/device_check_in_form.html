@@ -1,0 +1,39 @@
+<!-- asset_tracking/templates/device_check_in_form.html -->
+{% extends "base.html" %}
+{% block content %}
+  <h2>Check In Device</h2>
+  <form method="post">
+    {% csrf_token %}
+    
+    <!-- Display Employee Field -->
+    <label for="employee">Employee:</label>
+    <select name="employee">
+      {% for employee in employees %}
+        <option value="{{ employee.id }}">{{ employee.name }}</option>
+      {% endfor %}
+    </select>
+    <br>
+    
+    <!-- Display Devices Field -->
+    <label for="devices">Devices:</label>
+    <select name="devices" multiple>
+      {% for device in devices %}
+        <option value="{{ device.id }}">{{ device.name }}</option>
+      {% endfor %}
+    </select>
+    <br>
+    
+    <!-- Display End Date Field -->
+    <label for="{{ form.end_date.id_for_label }}">End Date:</label>
+    <input type="date" name="end_date" required>
+    <br>
+    
+    <!-- Display Condition Field -->
+    <label for="{{ form.condition.id_for_label }}">Condition:</label>
+    <input type="text" name="condition" required>
+    <br>
+
+    <button type="submit">Check In Device</button>
+  </form>
+  <a href="{% url 'device_assignment_list' %}">Back to Device Assignment List</a>
+{% endblock %}

@@ -19,5 +19,7 @@ urlpatterns = [
     path('device-handover/add/', views.add_or_update_device_handover, name='add_device_handover'),
     path('device-handover/<int:handover_id>/', views.add_or_update_device_handover, name='edit_device_handover'),
     path('dashboard/', views.dashboard, name='dashboard'),
+    path('check-out-device/', views.check_out_device, name='check_out_device'),
+    path('check-in-device/<int:assignment_id>/', views.check_in_device, name='check_in_device'),
     # Add more URLs for asset tracking and management as needed
 ]
