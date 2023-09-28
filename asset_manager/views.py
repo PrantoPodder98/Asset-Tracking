@@ -4,9 +4,11 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .models import UserProfile, Company
+from .models import UserProfile
 from django.http import HttpResponseBadRequest
 from django.contrib import messages
+from django import forms
+    
 
 def user_login(request):
     if request.method == 'POST':
@@ -49,26 +51,23 @@ def register(request):
     return render(request, 'registration_form.html', {'form': form})
 
 @login_required
-def create_company(request):
+def update_company_name(request):
+    user_profile = request.user.userprofile  # Assuming the related name is 'userprofile'
+
+    class UserProfileForm(forms.ModelForm):
+        class Meta:
+            model = UserProfile
+            fields = ['company_name']
+
     if request.method == 'POST':
-        company_name = request.POST['company_name']
+        form = UserProfileForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('dashboard')  # Redirect to the dashboard or wherever you want
+    else:
+        form = UserProfileForm(instance=user_profile)
 
-        # Get the user's profile associated with the currently logged-in user
-        user_profile = UserProfile.objects.get(user=request.user)
-
-        try:
-            # Try to create a new company
-            company = Company.objects.create(user_profile=user_profile, company_name=company_name)
-        except IntegrityError:
-            # If a company already exists for this user, update it
-            company = Company.objects.get(user_profile=user_profile)
-            company.company_name = company_name
-            company.save()
-
-        # Redirect to a success page or wherever you want
-        return redirect('dashboard')  # Adjust the URL name as needed
-
-    return render(request, 'create_company.html')
+    return render(request, 'update_company.html', {'form': form})
 
 @login_required
 def dashboard(request):

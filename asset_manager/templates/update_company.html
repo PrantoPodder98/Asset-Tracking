@@ -2,11 +2,11 @@
 
 {% extends "base.html" %}
 {% block content %}
-  <h2>Create Company</h2>
+  <h2>Update Company</h2>
   <form method="post">
     {% csrf_token %}
     <label for="company_name">Company Name:</label>
-    <input type="text" name="company_name" required>
-    <button type="submit">Create Company</button>
+    <input type="text" name="company_name" value="{{ user.userprofile.company_name }}" required>
+    <button type="submit">Update Company</button>
   </form>
 {% endblock %}
