@@ -1,11 +1,12 @@
 # asset_tracking/views.py
-
-from django.contrib.auth import login, authenticate
+from django.db import IntegrityError
+from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from .models import UserProfile, Company
 from django.http import HttpResponseBadRequest
+from django.contrib import messages
 
 def user_login(request):
     if request.method == 'POST':
@@ -14,13 +15,15 @@ def user_login(request):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            messages.success(request, 'Login successful.')
-            # Retrieve UserProfile associated with the user
+
+            # Try to retrieve UserProfile associated with the user
             try:
                 user_profile = UserProfile.objects.get(user=user)
             except UserProfile.DoesNotExist:
-                # Handle the case where UserProfile doesn't exist yet
-                pass
+                # UserProfile doesn't exist yet, create it
+                user_profile = UserProfile.objects.create(user=user, company_name='Default Company Name')
+
+            messages.success(request, 'Login successful.')
             return redirect('dashboard')
         else:
             messages.error(request, 'Invalid login credentials.')
@@ -45,14 +48,26 @@ def register(request):
         form = UserCreationForm()
     return render(request, 'registration_form.html', {'form': form})
 
-
 @login_required
 def create_company(request):
     if request.method == 'POST':
-        company_name = request.POST.get('company_name')
+        company_name = request.POST['company_name']
+
+        # Get the user's profile associated with the currently logged-in user
         user_profile = UserProfile.objects.get(user=request.user)
-        Company.objects.create(user_profile=user_profile, name=company_name)
-        return redirect('dashboard')
+
+        try:
+            # Try to create a new company
+            company = Company.objects.create(user_profile=user_profile, company_name=company_name)
+        except IntegrityError:
+            # If a company already exists for this user, update it
+            company = Company.objects.get(user_profile=user_profile)
+            company.company_name = company_name
+            company.save()
+
+        # Redirect to a success page or wherever you want
+        return redirect('dashboard')  # Adjust the URL name as needed
+
     return render(request, 'create_company.html')
 
 @login_required

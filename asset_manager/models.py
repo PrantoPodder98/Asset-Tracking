@@ -12,4 +12,5 @@ class UserProfile(models.Model):
 
 class Company(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
+    company_name = models.CharField(max_length=100)
     # Add other company-related fields as needed
