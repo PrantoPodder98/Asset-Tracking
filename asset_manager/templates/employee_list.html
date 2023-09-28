@@ -1,0 +1,38 @@
+<!-- asset_tracking/templates/employee_list.html -->
+
+{% extends "base.html" %}
+{% block content %}
+<h2>Employee List</h2>
+{% if employees %}
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Position</th>
+            <th>Status</th>
+            <!-- Add more columns as needed -->
+        </tr>
+    </thead>
+    <tbody>
+            {% for employee in employees %}
+            <tr>
+                <td>{{ employee.id }}</td>
+                <td>{{ employee.name }}</td>
+                <td>{{ employee.email }}</td>
+                <td>{{ employee.position }}</td>
+                <td><a href="{% url 'edit_employee' employee.id %}">Edit</a></td>
+                <!-- Add more columns as needed -->
+            </tr>
+            {% endfor %}
+        
+    </tbody>
+</table>
+{% else %}
+    No employees found.
+{% endif %}
+<br>
+<a href="{% url 'add_employee' %}">Add Employee</a>
+
+{% endblock %}

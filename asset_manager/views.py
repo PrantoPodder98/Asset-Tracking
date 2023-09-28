@@ -4,11 +4,12 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from .models import UserProfile
+from .models import UserProfile, Employee
 from django.http import HttpResponseBadRequest
 from django.contrib import messages
-from django import forms
-    
+from .forms import UserProfileForm, EmployeeRegistrationForm, UserRegistrationForm
+from django.shortcuts import get_object_or_404
+
 
 def user_login(request):
     if request.method == 'POST':
@@ -54,11 +55,6 @@ def register(request):
 def update_company_name(request):
     user_profile = request.user.userprofile  # Assuming the related name is 'userprofile'
 
-    class UserProfileForm(forms.ModelForm):
-        class Meta:
-            model = UserProfile
-            fields = ['company_name']
-
     if request.method == 'POST':
         form = UserProfileForm(request.POST, instance=user_profile)
         if form.is_valid():
@@ -68,6 +64,50 @@ def update_company_name(request):
         form = UserProfileForm(instance=user_profile)
 
     return render(request, 'update_company.html', {'form': form})
+
+@login_required
+def add_or_update_employee(request, employee_id=None):
+    if employee_id:
+        # Editing an existing employee
+        employee = get_object_or_404(Employee, id=employee_id)
+        user = employee.user  # Get the associated user
+    else:
+        # Adding a new employee
+        employee = None
+        user = None
+
+    if request.method == 'POST':
+        form = EmployeeRegistrationForm(request.POST, instance=employee)
+        user_form = UserRegistrationForm(request.POST, instance=user)
+
+        if form.is_valid() and user_form.is_valid():
+            user = user_form.save()
+            if not employee:
+                # Creating a new employee
+                employee = form.save(commit=False)
+            
+            # Set the user_profile for the employee
+            if request.user.userprofile:
+                employee.user_profile = request.user.userprofile
+            else:
+                # Handle the case where the request user doesn't have a userprofile
+                pass
+
+            employee.user = user
+            employee.save()
+            messages.success(request, 'Employee added/updated successfully.')
+            return redirect('employee_list')
+    else:
+        form = EmployeeRegistrationForm(instance=employee)
+        user_form = UserRegistrationForm(instance=user)
+
+    return render(request, 'employee_form.html', {'form': form, 'user_form': user_form, 'employee': employee})
+
+@login_required
+def employee_list(request):
+    # Filter employees by the currently logged-in user's ID
+    employees = Employee.objects.filter(user_profile=request.user.userprofile)
+    return render(request, 'employee_list.html', {'employees': employees})
 
 @login_required
 def dashboard(request):

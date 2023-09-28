@@ -1,0 +1,28 @@
+<!-- asset_tracking/templates/employee_form.html -->
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>{% if employee %}Update Employee{% else %}Add Employee{% endif %}</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="name">Name:</label>
+    <input type="text" name="name" value="{% if employee %}{{ employee.name }}{% endif %}" required>
+    <br>
+    <label for="email">Email:</label>
+    <input type="email" name="email" value="{% if employee %}{{ employee.email }}{% endif %}" required>
+    <br>
+    <label for="position">Position:</label>
+    <input type="text" name="position" value="{% if employee %}{{ employee.position }}{% endif %}" required>
+    <br>
+
+    <!-- User Information -->
+    <label for="username">Username:</label>
+    <input type="text" name="username" value="{{ employee.user.username }}" required>
+    <br>
+    <label for="password">Password:</label>
+    <input type="password" name="password" value="{{ employee.user.password }}" required>
+    <br>
+
+    <button type="submit">{% if employee %}Update Employee{% else %}Add Employee{% endif %}</button>
+  </form>
+{% endblock %}
