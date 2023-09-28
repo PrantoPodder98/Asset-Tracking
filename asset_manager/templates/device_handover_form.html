@@ -1,0 +1,41 @@
+<!-- asset_tracking/templates/device_handover_form.html -->
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>{% if handover %}Update{% else %}Add{% endif %} Device Handovers</h2>
+  <form method="post">
+    {% csrf_token %}
+    
+    <!-- Display Employee Field -->
+    <label for="employee">Employee:</label>
+    <select name="employee">
+      {% for employee in employees %}
+        <option value="{{ employee.id }}" {% if handover and handover.employee == employee %}selected{% endif %}>{{ employee.name }}</option>
+      {% endfor %}
+    </select>
+    <br>
+    
+    <!-- Display only devices associated with the logged-in user -->
+    <label for="devices">Devices:</label>
+    <select name="devices" multiple>
+      {% for device in devices %}
+        <option value="{{ device.id }}" {% if handover and device in handover.devices.all %}selected{% endif %}>{{ device.name }}</option>
+      {% endfor %}
+    </select>
+    <br>
+    
+    <!-- Display Start Date Field -->
+    <label for="{{ form.start_date.id_for_label }}">Start Date:</label>
+    <input type="date" name="{{ form.start_date.name }}" value="{% if form.start_date.value %}{{ form.start_date.value|date:'Y-m-d' }}{% endif %}" required>
+    <br>
+    
+    <!-- Display End Date Field -->
+    <label for="{{ form.end_date.id_for_label }}">End Date:</label>
+    <input type="date" name="{{ form.end_date.name }}" value="{% if form.end_date.value %}{{ form.end_date.value|date:'Y-m-d' }}{% endif %}" required>
+    <br>
+
+    <button type="submit">{% if handover %}Update{% else %}Add{% endif %} Device Handover</button>
+  </form>
+  <a href="{% url 'device_handover_list' %}">Back to Device Handover List</a>
+{% endblock %}
+

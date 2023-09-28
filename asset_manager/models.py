@@ -24,25 +24,40 @@ class Employee(models.Model):
 class Device(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    status = models.IntegerField(default=0)  # Default status is 0 (not handed over)
+    status = models.IntegerField(default=0)  # 0 for unassigned, 1 for assigned
     user_profile = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return self.name
 
+class DeviceHandover(models.Model):
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 
-# class EmployeeDevice(models.Model):
-#     employee = models.OneToOneField(Employee, on_delete=models.CASCADE)
-#     device = models.OneToOneField(Device, on_delete=models.CASCADE, unique=True)
+    devices = models.ManyToManyField(Device)  # ManyToMany relationship with Device
 
-#     def __str__(self):
-#         return f"{self.employee.name}'s {self.device.name}"
+    # Add any additional fields you may need
 
-# class DeviceLog(models.Model):
-#     device = models.ForeignKey(Device, on_delete=models.CASCADE)
-#     checked_out_by = models.ForeignKey(Employee, related_name='checkouts', on_delete=models.CASCADE)
-#     checked_in_by = models.ForeignKey(Employee, related_name='checkins', null=True, blank=True, on_delete=models.CASCADE)
-#     checkout_time = models.DateTimeField()
-#     checkin_time = models.DateTimeField(null=True, blank=True)
-#     condition_on_checkout = models.CharField(max_length=100)
-#     condition_on_checkin = models.CharField(max_length=100, null=True, blank=True)
+    def __str__(self):
+        return f"Devices to/from {self.employee} ({self.start_date} - {self.end_date})"
+
+from django.db import models
+
+class DeviceLog(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    checked_out_date = models.DateTimeField()
+    checked_in_date = models.DateTimeField(null=True, blank=True)
+    condition_when_checked_out = models.CharField(max_length=255)
+    condition_when_checked_in = models.CharField(max_length=255, null=True, blank=True)
+    # status = models.IntegerField(default=0)
+
+class DeviceAssignment(models.Model):
+    device = models.ForeignKey(Device, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    user_profile = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
+    status = models.IntegerField(default=0)
+    device_log = models.ForeignKey(DeviceLog, on_delete=models.SET_NULL, null=True, blank=True)

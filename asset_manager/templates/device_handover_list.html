@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>Device Handover List</h2>
+  <ul>
+    {% for handover in handovers %}
+      <li>
+        <!-- Device: {{ handover.devices }} -->
+        Assigned to: {{ handover.employee }}
+        From: {{ handover.start_date }} to {{ handover.end_date }}
+        <a href="{% url 'edit_device_handover' handover.id %}">Edit</a>
+      </li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'add_device_handover' %}">Add Device Handover</a>
+{% endblock %}
