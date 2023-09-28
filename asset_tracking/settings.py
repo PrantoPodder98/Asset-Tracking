@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'asset_manager',
+    'asset_tracking',  # Add the app to the list of installed apps here
 ]
 
 MIDDLEWARE = [

@@ -6,4 +6,4 @@ class AssetManagerConfig(AppConfig):
     name = 'asset_manager'
 
     def ready(self):
-        import asset_tracking.signals  # This line is for configuring signals
+        import asset_manager.signals  # This line is for configuring signals

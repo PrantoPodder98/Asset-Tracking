@@ -1,0 +1,12 @@
+<!-- asset_tracking/templates/create_company.html -->
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>Create Company</h2>
+  <form method="post">
+    {% csrf_token %}
+    <label for="company_name">Company Name:</label>
+    <input type="text" name="company_name" required>
+    <button type="submit">Create Company</button>
+  </form>
+{% endblock %}

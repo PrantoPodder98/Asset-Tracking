@@ -9,6 +9,7 @@ class UserProfile(models.Model):
     def __str__(self):
         return self.user.username
 
+
 class Company(models.Model):
     user_profile = models.OneToOneField(UserProfile, on_delete=models.CASCADE)
     # Add other company-related fields as needed

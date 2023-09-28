@@ -1,0 +1,8 @@
+<!-- asset_tracking/templates/dashboard.html -->
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>Welcome, {{ user.username }}!</h2>
+  <p>Your Company: {{ user.userprofile.company_name }}</p>
+  <!-- Add more content related to user's company and assets here -->
+{% endblock %}
